@@ -33,26 +33,29 @@ public class MainActivity extends AppCompatActivity   {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                 if(id == R.id.notes) {
-                    switchFragment(notesFragment);
-                    transaction.replace(R.id.flFragment, notesFragment).commit();
+                    switchFragment(notesFragment,false);
                 } else if(id == R.id.types) {
-                    switchFragment(typeFragment);
-                    transaction.replace(R.id.flFragment, typeFragment).commit();
+                    switchFragment(typeFragment,true);
                 } else
                     return false;
                 return true;
             }
         });
     }
-    private void switchFragment(Fragment fragment) {
+    private void switchFragment(Fragment fragment, boolean isLeftToRight) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_right_to_left, R.anim.exit_right_to_left,
-                                        R.anim.enter_left_to_right, R.anim.exit_left_to_right)
-        .replace(R.id.flFragment, fragment)
-        .addToBackStack(null)
-        .commit();
+        if (isLeftToRight) {
+            transaction.setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_right_to_left,
+                    R.anim.enter_right_to_left, R.anim.exit_right_to_left);
+        } else {
+            transaction.setCustomAnimations(R.anim.enter_right_to_left, R.anim.exit_left_to_right,
+                    R.anim.enter_left_to_right, R.anim.exit_left_to_right);
+        }
+        transaction.replace(R.id.flFragment, fragment)
+                .addToBackStack(null)
+                .commit();
     }
+
 }
