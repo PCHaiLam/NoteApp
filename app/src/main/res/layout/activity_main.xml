@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
+        android:id="@+id/viewPager2_fragment"
         android:layout_width="match_parent"
         android:layout_height="700dp"
         android:layout_above="@id/bottomNavigationView"

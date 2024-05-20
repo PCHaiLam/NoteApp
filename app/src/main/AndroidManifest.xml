@@ -22,7 +22,7 @@
             android:name=".InNoteActivity"
             android:exported="false" />
         <activity
-            android:name=".ListNoteAdapter"
+            android:name=".NoteAdapter"
             android:exported="false"
             android:label="@string/title_activity_list_note_adapter"
             android:theme="@style/Theme.NoteApp" />

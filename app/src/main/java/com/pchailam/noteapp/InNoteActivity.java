@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -16,12 +18,13 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class InNoteActivity extends AppCompatActivity {
     EditText editTextTitle, editTextContent;
-    TextView textViewTime, textViewDateInNote;
+    TextView textViewTime, textViewDateInNote, countChar;
     int position;
     private MyDatabase myDatabase;
     @SuppressLint("MissingInflatedId")
@@ -34,6 +37,7 @@ public class InNoteActivity extends AppCompatActivity {
         editTextContent = findViewById(R.id.edtContent);
         textViewTime = findViewById(R.id.tvTime);
         textViewDateInNote = findViewById(R.id.tvDateInNote);
+        countChar = findViewById(R.id.tvCountChar);
 
         myDatabase = new MyDatabase(InNoteActivity.this);
 
@@ -51,6 +55,10 @@ public class InNoteActivity extends AppCompatActivity {
 
             editTextTitle.setText(intent.getStringExtra("title"));
             editTextContent.setText(intent.getStringExtra("content"));
+
+            String text = editTextContent.getText().toString();
+            int charCount = text.length();
+            countChar.setText(String.valueOf(charCount));
         }
         else {
             createNewNote();
@@ -93,7 +101,19 @@ public class InNoteActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-
+        editTextContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int charCount = s.length();
+                countChar.setText(String.valueOf(charCount));
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         ImageButton btnCompleted = findViewById(R.id.btnComplete);
         btnCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,11 +130,11 @@ public class InNoteActivity extends AppCompatActivity {
         myDatabase = new MyDatabase(InNoteActivity.this);
 
         if (position != -1) {
-            Note newNote= new Note(NotesFragment.list.get(position).getId(),title,content,newDateTime,1);
+            Note newNote= new Note(NotesFragment.list.get(position).getId(),title,content,newDateTime,0);
             myDatabase.editNote(newNote,NotesFragment.list.get(position).getId());
         }
         else {
-            Note newNote= new Note(position,title,content,newDateTime,1);
+            Note newNote= new Note(position,title,content,newDateTime,0);
             myDatabase.addNote(newNote);
         }
 

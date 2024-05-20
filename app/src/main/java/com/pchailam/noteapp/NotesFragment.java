@@ -1,7 +1,5 @@
 package com.pchailam.noteapp;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +22,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class NotesFragment extends Fragment implements ListNoteAdapter.OnItemClickListener {
+public class NotesFragment extends Fragment implements NoteAdapter.OnItemClickListener {
     static ArrayList<Note> list;
-    private ListNoteAdapter adapter;
+    private NoteAdapter adapter;
     private RecyclerView recyclerView;
     TextView textViewCount;
     private MyDatabase myDatabase;
@@ -68,7 +65,7 @@ public class NotesFragment extends Fragment implements ListNoteAdapter.OnItemCli
 
         recyclerView = view.findViewById(R.id.recyclerNote);
 
-        adapter = new ListNoteAdapter(getActivity(), list);
+        adapter = new NoteAdapter(getActivity(), list);
 
         LinearLayoutManager listLayoutManager = new LinearLayoutManager(getActivity());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);

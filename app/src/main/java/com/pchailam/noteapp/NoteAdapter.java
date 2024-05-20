@@ -1,13 +1,10 @@
 package com.pchailam.noteapp;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.DialogTitle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,28 +16,28 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class ListNoteAdapter extends RecyclerView.Adapter<ListNoteAdapter.ListNoteViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHolder> {
     @SuppressLint("StaticFieldLeak")
     static Context context;
     static ArrayList<Note> data;
     static ArrayList<Type> types;
     private static OnItemClickListener mListener;
 
-    public ListNoteAdapter(Context context, ArrayList<Note> data) {
-        ListNoteAdapter.context = context;
-        ListNoteAdapter.data = data;
+    public NoteAdapter(Context context, ArrayList<Note> data) {
+        NoteAdapter.context = context;
+        NoteAdapter.data = data;
     }
 
     @NonNull
     @Override
-    public ListNoteAdapter.ListNoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NoteAdapter.ListNoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.list_style_note, parent, false);
+        View view = layoutInflater.inflate(R.layout.note_layout, parent, false);
         return new ListNoteViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListNoteAdapter.ListNoteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NoteAdapter.ListNoteViewHolder holder, int position) {
         Note card =data.get(position);
         holder.textViewTitle.setText(card.getTitle());
         holder.textViewContent.setText(card.getContent());
