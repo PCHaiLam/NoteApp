@@ -83,7 +83,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNote"
             android:layout_width="match_parent"
-            android:layout_height="605dp"
+            android:layout_height="578dp"
             android:background="#FFF7F7F7"
             android:paddingHorizontal="20dp">
 

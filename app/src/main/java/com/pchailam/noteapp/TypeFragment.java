@@ -1,5 +1,6 @@
 package com.pchailam.noteapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,15 +21,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class TypeFragment extends Fragment {
-     ArrayList<Type> types;
+     static ArrayList<Type> types;
      ArrayList<Note> notes;
-    TypeAdapter adapter;
+    @SuppressLint("StaticFieldLeak")
+    static TypeAdapter adapter;
     MyDatabase myDatabase;
     ActivityResultLauncher<Intent> activityResultLauncher;
     public TypeFragment() {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,6 @@ public class TypeFragment extends Fragment {
         myDatabase = new MyDatabase(getActivity());
         notes = myDatabase.readData();
         types = myDatabase.readTypeData();
-        showTypeListDialogFromDatabase();
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_type);
         adapter = new TypeAdapter(getContext(), types);
@@ -59,32 +59,6 @@ public class TypeFragment extends Fragment {
         });
         return view;
     }
-
-    private void showTypeListDialogFromDatabase() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Danh sách loại đã đọc");
-
-        // Tạo một StringBuilder để xây dựng nội dung của dialog
-        StringBuilder message = new StringBuilder();
-        for (Type type : types) {
-            message.append(type.getId() + ": ").append(type.getType()).append("\n"); // Thêm tên loại vào StringBuilder
-        }
-
-        // Thiết lập nội dung của dialog bằng nội dung từ StringBuilder
-        builder.setMessage(message.toString());
-
-        // Tạo nút "Đóng" để đóng dialog khi người dùng nhấn
-        builder.setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss(); // Đóng dialog
-            }
-        });
-
-        // Hiển thị dialog
-        builder.show();
-    }
-
     private void showAddTypeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Thêm sổ tay");

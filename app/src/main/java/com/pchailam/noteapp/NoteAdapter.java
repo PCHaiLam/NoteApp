@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHo
     static ArrayList<Note> data;
     static ArrayList<Type> types;
     private static OnItemClickListener mListener;
+    static int position;
 
     public NoteAdapter(Context context, ArrayList<Note> data) {
         NoteAdapter.context = context;
@@ -74,12 +78,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHo
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.btnMenu) {
-                //click vào popupmenu trên card note
                 showPopupMenu();
             } else {
                 //click vào card note
                 if (mListener != null) {
-                    int position = getAdapterPosition();
+                    position = getLayoutPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         mListener.onItemClick(position);
                     }
@@ -97,11 +100,51 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHo
         public boolean onMenuItemClick(MenuItem item) {
             int id = item.getItemId();
             if (id == R.id.typing) {
-//                types.add(new Type(1,"Học tập"));
-                Toast.makeText(context, "Loại", Toast.LENGTH_SHORT).show();
+                showTypeDialog();
                 return true;
             }
             return false;
         }
+        private void showTypeDialog() {
+            position = getLayoutPosition();
+            MyDatabase myDatabase = new MyDatabase(context);
+            types = myDatabase.readTypeData();
+
+            String[] typeNames = new String[types.size()];
+            int[] IDs = new int[1];
+
+            for (int i = 0; i < types.size(); i++) {
+                typeNames[i] = types.get(i).getType();
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Chọn loại")
+                    .setSingleChoiceItems(typeNames, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            IDs[0] = types.get(which).getId();
+                        }
+                    })
+                    .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            Note note = data.get(position);
+                            myDatabase.updateNoteType(note.getId(),IDs[0]);
+
+                            TypeFragment.adapter.notifyDataSetChanged();
+
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
+        }
+
     }
 }

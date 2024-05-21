@@ -104,6 +104,16 @@ public class MyDatabase extends SQLiteOpenHelper {
 
         db.close();
     }
+    public void updateNoteType(int noteId, int typeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String typeName = readTypeData().get(typeId-1).getType();
+        values.put(COLUMN_ID_TYPE_FK, typeId);
+
+        db.update("my_library", values, "id = ?", new String[]{String.valueOf(noteId)});
+        Toast.makeText(context, "Ghi chú đã được thêm vào " + typeName, Toast.LENGTH_SHORT).show();
+        db.close();
+    }
     void addType(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
