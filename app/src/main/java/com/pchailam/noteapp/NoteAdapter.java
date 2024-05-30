@@ -31,7 +31,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHo
         NoteAdapter.context = context;
         NoteAdapter.data = data;
     }
-
     @NonNull
     @Override
     public NoteAdapter.ListNoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,6 +55,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListNoteViewHo
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(ArrayList<Note> newNotes) {
+        data = newNotes;
+        notifyDataSetChanged();
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
     }

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class TypeFragment extends Fragment {
      ArrayList<Note> notes;
     @SuppressLint("StaticFieldLeak")
     static TypeAdapter adapter;
+    @SuppressLint("StaticFieldLeak")
+    static NoteAdapter noteAdapter;
     MyDatabase myDatabase;
     ActivityResultLauncher<Intent> activityResultLauncher;
     public TypeFragment() {
@@ -46,9 +49,21 @@ public class TypeFragment extends Fragment {
         types = myDatabase.readTypeData();
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_type);
-        adapter = new TypeAdapter(getContext(), types);
+        adapter = new TypeAdapter(getContext(), types, new TypeAdapter.OnTypeClickListener() {
+            @Override
+            public void onTypeClick(int typeId) {
+                TextView tvTypeName = view.findViewById(R.id.typeName);
+                tvTypeName.setText(types.get(typeId-1).getType());
+                updateNotesForType(typeId);
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
+
+        RecyclerView recyclerView1 = view.findViewById(R.id.recyclerNoteInType);
+        noteAdapter = new NoteAdapter(getContext(), new ArrayList<>());
+        recyclerView1.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView1.setAdapter(noteAdapter);
 
         ImageButton btnAddType = view.findViewById(R.id.btnAddType);
         btnAddType.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +74,17 @@ public class TypeFragment extends Fragment {
         });
         return view;
     }
+
+    private void updateNotesForType(int typeId) {
+        ArrayList<Note> notes1 = new ArrayList<>();
+        for (Note note : notes) {
+            if (note.getId_type() == typeId) {
+                notes1.add(note);
+            }
+        }
+        noteAdapter.updateData(notes1);
+    }
+
     private void showAddTypeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Thêm sổ tay");

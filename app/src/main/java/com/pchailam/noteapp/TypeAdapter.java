@@ -1,13 +1,15 @@
 package com.pchailam.noteapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -15,17 +17,22 @@ import java.util.ArrayList;
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder> {
     Context context;
     static ArrayList<Type> types;
-
-    public TypeAdapter(Context context, ArrayList<Type> types) {
+    OnTypeClickListener onTypeClickListener;
+    static int isSelected = -1;
+    public TypeAdapter(Context context, ArrayList<Type> types, OnTypeClickListener onTypeClickListener) {
         this.context = context;
-        this.types = types;
+        TypeAdapter.types = types;
+        this.onTypeClickListener = onTypeClickListener;
+    }
+    public interface OnTypeClickListener {
+        void onTypeClick(int typeId);
     }
     @NonNull
     @Override
     public TypeAdapter.TypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.type_layout, parent, false);
-        return new TypeViewHolder(view);
+        return new TypeViewHolder(view, onTypeClickListener);
     }
 
     @Override
@@ -33,27 +40,43 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         Type type = types.get(position);
         holder.tvTypeName.setText(type.getType());
         holder.tvCountNote.setText(String.valueOf(countNoteInType(type.getId())));
+
+        if(isSelected == position) {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.selected_background));
+        }
+        else {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.white));
+        }
     }
 
     @Override
     public int getItemCount() {
         return types.size();
     }
-    static final class TypeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    final class TypeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTypeName;
         TextView tvCountNote;
+        CardView cardView;
+        OnTypeClickListener onTypeClickListener;
 
-        public TypeViewHolder(@NonNull View itemView) {
+        public TypeViewHolder(@NonNull View itemView, OnTypeClickListener onTypeClickListener) {
             super(itemView);
             itemView.setOnClickListener(this);
             tvTypeName = itemView.findViewById(R.id.nameType);
             tvCountNote = itemView.findViewById(R.id.countNoteInType);
+            cardView = itemView.findViewById(R.id.cardViewType);
+            this.onTypeClickListener = onTypeClickListener;
         }
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            Type type = types.get(clickedPosition);
-            Toast.makeText(v.getContext(), "Clicked: " + type.getType(), Toast.LENGTH_SHORT).show();
+            int position = getLayoutPosition();
+            if (position != RecyclerView.NO_POSITION && onTypeClickListener != null) {
+                onTypeClickListener.onTypeClick(types.get(position).getId());
+
+                isSelected = position;
+                notifyDataSetChanged();
+            }
         }
     }
     private int countNoteInType(int id_type) {

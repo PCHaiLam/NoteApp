@@ -147,15 +147,7 @@
             android:background="#B8B8B8"
             android:paddingVertical="10dp"
             android:src="@mipmap/completed" />
-        <ImageButton
-            android:id="@+id/btnEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:layout_weight="1"
-            android:src="@mipmap/edit"
-            android:background="#B8B8B8"
-            />
+
     </LinearLayout>
 
 
