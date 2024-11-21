@@ -13,14 +13,10 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0:
-                return new NotesFragment();
-            case 1:
-                return new TypeFragment();
-            default:
-                return new NotesFragment();
+        if (position == 1) {
+            return new TypeFragment();
         }
+        return new NotesFragment();
     }
 
     @Override
